@@ -5,13 +5,13 @@ function HomePage() {
     <p className="mt-4 text-lg">A platform that combines students and organizations together</p>
     <div className='w-full flex justify-center mt-4'>
 
-    <Link href=""> 
+    <Link href="/admin/login"> 
           <a className="bg-green-900 mr-2 p-2 pl-5 pr-5 rounded-lg hover:bg-white hover:text-blue-300">Admin Login</a>
     </Link>
-    <Link href="" > 
+    <Link href="/student/login" > 
           <a className="bg-green-900 mr-2 p-2 pl-5 pr-5 rounded-lg hover:bg-white hover:text-blue-300">Student Login</a>
     </Link>
-    <Link href="" > 
+    <Link href="/company/login" > 
           <a className="bg-green-900 p-2 pl-5 pr-5 rounded-lg hover:bg-white hover:text-blue-300">Company Login</a>
     </Link>
     </div>
