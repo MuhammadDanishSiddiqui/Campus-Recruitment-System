@@ -58,6 +58,7 @@ export const singnUpCompany = async (formData, uploadImage = null, loadCallBack,
             email: formData.email,
             contact: formData.contact,
             username: formData.username,
+            description: formData.description,
             imageUrl: imageUrl ? imageUrl : "",
             role: "company"
         })
@@ -69,14 +70,14 @@ export const singnUpCompany = async (formData, uploadImage = null, loadCallBack,
 
 }
 
-export const loginUser =async (user,loadCallBack, successCallBack, errorCallback) =>{
-try {
-    loadCallBack()
-    const userCredential = await signInWithEmailAndPassword(auth, user.email, user.password)
-    successCallBack(userCredential.user)
-} catch (error) {
-    errorCallback(error.message)
-}
+export const loginUser = async (user, loadCallBack, successCallBack, errorCallback) => {
+    try {
+        loadCallBack()
+        const userCredential = await signInWithEmailAndPassword(auth, user.email, user.password)
+        successCallBack(userCredential.user)
+    } catch (error) {
+        errorCallback(error.message)
+    }
 }
 
 

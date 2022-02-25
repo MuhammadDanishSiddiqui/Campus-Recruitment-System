@@ -31,6 +31,7 @@ function SignUp() {
         email: '',
         contact: '',
         username: '',
+        description: '',
         password: '',
     })
 
@@ -105,11 +106,11 @@ function SignUp() {
 
 
     if (role === "company") {
-        return <div className='bg-blue-300 w-full h-screen flex justify-center items-center'>
-            <div className='bg-white color-blue-300 w-2/4 p-3 rounded-md h-3/4 flex flex-col justify-center'>
+        return <div className='bg-blue-300 w-full min-h-screen p-8 flex justify-center items-center'>
+            <div className='bg-white color-blue-300 w-2/4 p-3 rounded-md flex flex-col justify-center'>
                 <h1 className='mb-8 text-3xl text-center'>Sign Up</h1>
                 <div className='flex justify-center'>
-                    <img src={imagePreview ? imagePreview : 'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-image-icon-default-avatar-profile-icon-social-media-user-vector-image-209162840.jpg'} onClick={() => uploadImage.current && uploadImage.current.click()} className='w-20 mb-4 rounded-full' />
+                    <img src={imagePreview ? imagePreview : 'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-image-icon-default-avatar-profile-icon-social-media-user-vector-image-209162840.jpg'} onClick={() => uploadImage.current && uploadImage.current.click()} className='w-20 h-20 mb-4 rounded-full' />
                     <input type="file" hidden ref={uploadImage} onChange={(e) => handleImageUpload(e)} />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
@@ -127,6 +128,10 @@ function SignUp() {
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold alig text-left block w-40'>Contact:</span>
                     <input name="contact" value={company.contact} type="number" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                </div>
+                <div className='w-full flex justify-around mb-4'>
+                    <span className='font-bold text-left block w-40'>Description:</span>
+                    <textarea name="description" value={company.description} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1'></textarea>
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Username:</span>
@@ -148,7 +153,7 @@ function SignUp() {
                         {
                             loading ? <div class="loader"></div> : <button onClick={() => handleSignUpCompany(company, image)} className='font-bold bg-green-300 px-7 py-2 mb-4 rounded-md'>Register</button>
                         }
-                        
+
                         <p>Already have an account ?  <Link href="/company/login"><a className='text-blue-300'>Login</a></Link></p>
                     </div>
                 </div>
@@ -156,8 +161,8 @@ function SignUp() {
         </div>
     }
     else {
-        return <div className='bg-blue-300 w-full h-screen flex justify-center items-center'>
-            <div className='bg-white color-blue-300 w-2/4 p-3 rounded-md h-4/5 flex flex-col justify-center'>
+        return <div className='bg-blue-300 w-full min-h-screen p-8 flex justify-center items-center'>
+            <div className='bg-white color-blue-300 w-2/4 p-3 rounded-md flex flex-col justify-center'>
                 <h1 className='mb-8 text-3xl text-center'>Sign Up</h1>
                 <div className='flex justify-center'>
                     <img src={imagePreview ? imagePreview : 'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-image-icon-default-avatar-profile-icon-social-media-user-vector-image-209162840.jpg'} onClick={() => uploadImage.current && uploadImage.current.click()} className='w-20 h-20 mb-4 rounded-full' />
@@ -216,7 +221,7 @@ function SignUp() {
                         {
                             loading ? <div class="loader"></div> : <button onClick={() => handleSignUpStudent(student, image, resume)} className='font-bold bg-green-300 px-7 py-2 mb-4 rounded-md'>Register</button>
                         }
-                        
+
                         <p>Already have an account ?  <Link href="/student/login"><a className='text-blue-300'>Login</a></Link></p>
                     </div>
                 </div>
