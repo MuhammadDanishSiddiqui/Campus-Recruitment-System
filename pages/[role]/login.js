@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from "next/router"
 import { loginUser } from "../../src/functions/auth"
+import { getUserDetail } from "../../src/functions/user"
 
 function Login() {
     const router = useRouter()
@@ -32,8 +33,21 @@ function Login() {
                 setError(null)
             },
             (data) => {
-                setLoading(false)
-                localStorage.setItem("user", JSON.stringify(data))
+                getUserDetail(data.uid,()=>{},(data)=>{
+                    setLoading(false)
+                    localStorage.setItem("currentUser",JSON.stringify(data))
+                    if(data.role == "student")
+                    {
+                        router.push("/student")
+                    }
+                    else if(data.role == "company")
+                    {
+                        router.push("/company")
+                    }
+                },(error)=>{
+                    setLoading(false)
+                    throw error
+                })
             },
             (error) => {
                 setLoading(false)

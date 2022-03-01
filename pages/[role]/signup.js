@@ -77,8 +77,17 @@ function SignUp() {
                 setError(null)
             },
             (data) => {
-                setLoading(false)
-                localStorage.setItem("user", JSON.stringify(data))
+                getUserDetail(data.uid,()=>{},(data)=>{
+                    setLoading(false)
+                    localStorage.setItem("currentUser",JSON.stringify(data))
+                    if(data.role == "student")
+                    {
+                        router.push("/student")
+                    }
+                },(error)=>{
+                    setLoading(false)
+                    throw error
+                })
             },
             (error) => {
                 setLoading(false)
@@ -95,7 +104,17 @@ function SignUp() {
             },
             (data) => {
                 setLoading(false)
-                localStorage.setItem("user", JSON.stringify(data))
+                getUserDetail(data.uid,()=>{},(data)=>{
+                    setLoading(false)
+                    localStorage.setItem("currentUser",JSON.stringify(data))
+                    if(data.role == "company")
+                    {
+                        router.push("/company")
+                    }
+                },(error)=>{
+                    setLoading(false)
+                    throw error
+                })
             },
             (error) => {
                 setLoading(false)
@@ -127,7 +146,7 @@ function SignUp() {
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold alig text-left block w-40'>Contact:</span>
-                    <input name="contact" value={company.contact} type="number" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input name="contact" value={company.contact} onChange={e => handleSubmit(e)} type="number" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Description:</span>

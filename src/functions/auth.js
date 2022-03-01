@@ -1,8 +1,7 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth, db, storage } from "../firebase"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { addDoc, doc, setDoc, collection } from "firebase/firestore";
-import { async } from "@firebase/util";
+import { doc, setDoc} from "firebase/firestore";
 
 export const singnUpStudent = async (formData, uploadImage = null, resume, loadCallBack, successCallBack, errorCallback) => {
     try {
@@ -80,20 +79,12 @@ export const loginUser = async (user, loadCallBack, successCallBack, errorCallba
     }
 }
 
+export const logoutUser = async (successCallBack) => {
+    try {
+         await signOut(auth)
+         successCallBack()
+    } catch (error) {
+        errorCallback(error.message)
+    }
+}
 
-
-
-
-// import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-
-// const auth = getAuth();
-// signInWithEmailAndPassword(auth, email, password)
-//   .then((userCredential) => {
-//     // Signed in 
-//     const user = userCredential.user;
-//     // ...
-//   })
-//   .catch((error) => {
-//     const errorCode = error.code;
-//     const errorMessage = error.message;
-//   });

@@ -1,19 +1,42 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import Link from 'next/link'
 import Header from "../../src/components/Header"
+import { useRouter } from "next/router"
 
 function Profile() {
-    const [loading, setLoading] = useState(false)
+    const router = useRouter()
+    const user = JSON.parse(typeof window !== "undefined" && localStorage.getItem("currentUser"))  
     const [student, setStudent] = useState({
-        firstName: 'xyz',
-        lastName: 'bla bla',
-        gender: 'Male',
-        email: 'xyz@gmail.com',
-        contact: '123456789',
-        city: 'karachi',
-        address: 'kolkata bla bla',
+        firstName: '',
+        lastName: '',
+        gender: '',
+        email: '',
+        contact: '',
+        city: '',
+        address: '',
         imageUrl: "",
     })
+
+    useEffect(() => {
+     if(!user || user.role !== "student")
+     {
+        router.push("/")
+     }
+     if(user && !student.firstName)
+     {
+        setStudent({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            gender: user.gender,
+            email: user.email,
+            contact: user.contact,
+            city: user.city,
+            address: user.address,
+            imageUrl: user.imageUrl ? user.imageUrl : "",
+        })
+     }
+    }, [user])
+
     const handleSubmit = (e) => {
         let name = e.target.name
         let value = e.target.value
@@ -25,12 +48,12 @@ function Profile() {
         })
 
     }
-
+    
     return (
         <>
             <Header />
             {
-                loading ? <div className='mt-40 w-full flex justify-center items-center'><div className="loader"></div></div> :
+                !user ? <span className='mt-40 w-full flex justify-center items-center'><div className="loader"></div></span> :
                     <div className='w-full flex justify-center items-center'>
                         <div className='w-2/4 flex flex-col justify-center mt-4'>
                             <h1 className='mb-8 text-3xl text-center'>Profile</h1>
