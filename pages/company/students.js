@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Header from "../../src/components/Header"
+import Header from "../../src/components/CompanyHeader"
 import { useRouter } from "next/router"
 import { getAllStudents } from "../../src/functions/company"
 
@@ -14,18 +14,15 @@ function Students() {
         if (!user || user.role !== "company") {
             router.push("/")
         }
-        if (user && students.length == 0) {
             getAllStudents(
                 () => setLoading(true),
                 (data) => {
                     setStudents(data)
                     setLoading(false)
-                    console.log(students)
                 },
                 (error) => { setLoading(false)}
             )
-        }
-    }, [user])
+    }, [])
 
 
 

@@ -1,41 +1,46 @@
 import React, { useState,useEffect } from 'react'
 import Header from '../../../src/components/StudentHeader'
 import { useRouter } from "next/router"
-import { getCompanyDetails } from "../../../src/functions/user"
+import { getJobDetails  } from "../../../src/functions/company"
+import moment from "moment"
 
-function CompanyDetails() {
+function JobDetails() {
     const router = useRouter()
-    const { companyId } = router.query
+    const { jobId } = router.query
     const user = JSON.parse(typeof window !== "undefined" && localStorage.getItem("currentUser"))
     const [error,setError] =useState()
     const [loading, setLoading] = useState(false)
-    const [company, setCompany] = useState(  {
-        companyName: "",
-        established: "",
-        email: "",
-        contact: "",
-        username: "",
+    const [job, setJob] = useState({
+        title: "",
+        type: "",
         description: "",
-        imageUrl: ""
+        salary: null,
+        companyId: "",
+        companyName:"",
+        email:"",
+        createdAt:"",
+        imageUrl:""
     })
 
     useEffect(() => {
         if (!user || user.role !== "student") {
             router.push("/")
         }
-        if (user && companyId) {
-            getCompanyDetails(companyId,
+        if (user && jobId) {
+            getJobDetails(jobId,
                 () => setLoading(true),
                 (data) => {
-                    setCompany(
+                    setJob(
                         {
-                            companyName: data.companyName,
-                            established: data.established,
-                            email: data.email,
-                            contact: data.contact,
-                            username: data.username,
+                            title: data.title,
+                            type: data.type,
                             description: data.description,
-                            imageUrl: data.imageUrl ? data.imageUrl : ""
+                            salary: data.salary,
+                            companyId: data.companyId,
+                            companyName:data.companyName,
+                            email:data.email,
+                            createdAt:data.createdAt,
+                            imageUrl: data.imageUrl
                         }
                     )
                     setLoading(false)
@@ -45,7 +50,7 @@ function CompanyDetails() {
                 }
             )
         }
-    }, [companyId])
+    }, [jobId])
 
     return (
         <>
@@ -53,32 +58,36 @@ function CompanyDetails() {
             {loading ? <span className='mt-40 w-full flex justify-center items-center'><div className="loader"></div></span> : !error && !loading ?
                 <div className='w-full mt-14 p-8 flex justify-center items-center'>
                     <div className='basis-2/5'>
-                        <img className='w-80 m-auto h-80' src={company.imageUrl ? company.imageUrl : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSi22ZjrzDKBoHI3ELq2MYtkoP1oQwj-fDGSw&usqp=CAU"} />
+                        <img className='w-80 m-auto h-80' src={job.imageUrl ? job.imageUrl : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSi22ZjrzDKBoHI3ELq2MYtkoP1oQwj-fDGSw&usqp=CAU"} />
                     </div>
                     <div className='basis-3/5'>
-                        <div className='flex border-b-2 border-gray p-2'>
-                            <h2 className='font-bold w-40'>Company Name:</h2>
-                            <p>{company.companyName}</p>
-                        </div>
-                        <div className='flex border-b-2 border-gray p-2'>
-                            <h2 className='font-bold w-40'>Co Founder:</h2>
-                            <p>{company.username}</p>
-                        </div>
-                        <div className='flex border-b-2 border-gray p-2'>
-                            <h2 className='font-bold w-40'>Established:</h2>
-                            <p>{company.established}</p>
+                         <div className='flex border-b-2 border-gray p-2'>
+                            <h2 className='font-bold w-40'>Company:</h2>
+                            <p>{job.companyName}</p>
                         </div>
                         <div className='flex border-b-2 border-gray p-2'>
                             <h2 className='font-bold w-40'>Email:</h2>
-                            <p>{company.email}</p>
+                            <p>{job.email}</p>
                         </div>
                         <div className='flex border-b-2 border-gray p-2'>
-                            <h2 className='font-bold w-40'>Contact:</h2>
-                            <p>{company.contact}</p>
+                            <h2 className='font-bold w-40'>Job Title:</h2>
+                            <p>{job.title}</p>
+                        </div>
+                        <div className='flex border-b-2 border-gray p-2'>
+                            <h2 className='font-bold w-40'>Job Type:</h2>
+                            <p>{job.type}</p>
+                        </div>
+                        <div className='flex border-b-2 border-gray p-2'>
+                            <h2 className='font-bold w-40'>Salary:</h2>
+                            <p>{job.salary}</p>
                         </div>
                         <div className='flex border-b-2 border-gray p-2'>
                             <h2 className='font-bold w-40'>Description:</h2>
-                            <p className='flex-1'>{company.description}</p>
+                            <p>{job.description}</p>
+                        </div>
+                        <div className='flex border-b-2 border-gray p-2'>
+                            <h2 className='font-bold w-40'>Post Date:</h2>
+                            <p>{moment(job.createdAt).format("LL")}</p>
                         </div>
                     </div>
                 </div> 
@@ -89,4 +98,4 @@ function CompanyDetails() {
     )
 }
 
-export default CompanyDetails
+export default JobDetails

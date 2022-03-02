@@ -1,5 +1,5 @@
 import React , {useEffect} from 'react'
-import Header from "../../src/components/Header"
+import Header from "../../src/components/CompanyHeader"
 import { useRouter } from "next/router"
 
 function Company() {

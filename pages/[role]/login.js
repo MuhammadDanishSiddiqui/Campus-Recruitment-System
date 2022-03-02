@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from "next/router"
 import { loginUser } from "../../src/functions/auth"
 import { getUserDetail } from "../../src/functions/user"
 
 function Login() {
+    const user = JSON.parse(typeof window !== "undefined" && localStorage.getItem("currentUser"))
     const router = useRouter()
     const { role } = router.query
     const [loading, setLoading] = useState(false)
@@ -14,6 +15,18 @@ function Login() {
         email: '',
         password: '',
     })
+
+    useEffect(()=>{
+        if(user && user.role == "student")
+        {
+            router.push("/student/profile")
+        }
+        if(user && user.role == "company")
+        {
+            router.push("/company/profile")
+        }
+
+    },[user])
 
     const handleSubmit = (e) => {
         let name = e.target.name
@@ -43,6 +56,10 @@ function Login() {
                     else if(data.role == "company")
                     {
                         router.push("/company")
+                    }
+                    else if(data.role == "admin")
+                    {
+                        router.push("/admin")
                     }
                 },(error)=>{
                     setLoading(false)

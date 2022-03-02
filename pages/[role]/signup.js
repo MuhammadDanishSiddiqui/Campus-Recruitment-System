@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from "next/router"
 import { useRef } from "react"
 import { singnUpStudent, singnUpCompany } from "../../src/functions/auth"
+import { getUserDetail } from "../../src/functions/user"
 
 function SignUp() {
+    const user = JSON.parse(typeof window !== "undefined" && localStorage.getItem("currentUser"))
     const uploadImage = useRef(null)
     const router = useRouter()
     const { role } = router.query
@@ -13,6 +15,7 @@ function SignUp() {
     const [resume, setResume] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
+    const [signupError, setSignUpError] = useState()
 
     const [student, setStudent] = useState({
         firstName: '',
@@ -35,9 +38,18 @@ function SignUp() {
         password: '',
     })
 
+    useEffect(() => {
+        if (user && user.role == "student") {
+            router.push("/student/profile")
+        }
+        if (user && user.role == "company") {
+            router.push("/company/profile")
+        }
+
+    }, [user])
+
     const handleImageUpload = (e) => {
         let selectedImage = e.target.files[0]
-        console.log(selectedImage)
         var reader = new FileReader();
         reader.onload = function () {
             if (reader.readyState == 2) {
@@ -71,20 +83,24 @@ function SignUp() {
     }
 
     const handleSignUpStudent = async (student, image, resume) => {
+        setSignUpError(null)
+        if (!student.firstName || !student.lastName || !student.gender || !student.email || !student.contact || !student.city || !student.password || !resume) {
+            setSignUpError("Plase fill all fields.")
+            return
+        }
         singnUpStudent(student, image, resume,
             () => {
                 setLoading(true)
                 setError(null)
             },
             (data) => {
-                getUserDetail(data.uid,()=>{},(data)=>{
+                getUserDetail(data.uid, () => { }, (data) => {
                     setLoading(false)
-                    localStorage.setItem("currentUser",JSON.stringify(data))
-                    if(data.role == "student")
-                    {
+                    localStorage.setItem("currentUser", JSON.stringify(data))
+                    if (data.role == "student") {
                         router.push("/student")
                     }
-                },(error)=>{
+                }, (error) => {
                     setLoading(false)
                     throw error
                 })
@@ -97,21 +113,25 @@ function SignUp() {
     }
 
     const handleSignUpCompany = async (company, image) => {
+        setSignUpError(null)
+        if(!company.companyName || !company.established || !company.email || !company.contact || !company.username || !company.description || !company.password)
+        {
+            setSignUpError("Plase fill all fields.")
+            return
+        }
         singnUpCompany(company, image,
             () => {
                 setLoading(true)
                 setError(null)
             },
             (data) => {
-                setLoading(false)
-                getUserDetail(data.uid,()=>{},(data)=>{
+                getUserDetail(data.uid, () => { }, (data) => {
                     setLoading(false)
-                    localStorage.setItem("currentUser",JSON.stringify(data))
-                    if(data.role == "company")
-                    {
+                    localStorage.setItem("currentUser", JSON.stringify(data))
+                    if (data.role == "company") {
                         router.push("/company")
                     }
-                },(error)=>{
+                }, (error) => {
                     setLoading(false)
                     throw error
                 })
@@ -134,35 +154,40 @@ function SignUp() {
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Company Name:</span>
-                    <input name="companyName" value={company.companyName} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required name="companyName" value={company.companyName} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Established:</span>
-                    <input name="established" value={company.established} onChange={e => handleSubmit(e)} type="number" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required name="established" value={company.established} onChange={e => handleSubmit(e)} type="number" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Email:</span>
-                    <input name="email" value={company.email} type="email" onChange={e => handleSubmit(e)} className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required name="email" value={company.email} type="email" onChange={e => handleSubmit(e)} className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold alig text-left block w-40'>Contact:</span>
-                    <input name="contact" value={company.contact} onChange={e => handleSubmit(e)} type="number" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required name="contact" value={company.contact} onChange={e => handleSubmit(e)} type="number" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Description:</span>
-                    <textarea name="description" value={company.description} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1'></textarea>
+                    <textarea required name="description" value={company.description} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1'></textarea>
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Username:</span>
-                    <input name="username" value={company.username} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required name="username" value={company.username} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Password:</span>
-                    <input name="password" value={company.password} onChange={e => handleSubmit(e)} type="password" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required name="password" value={company.password} onChange={e => handleSubmit(e)} type="password" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 {
                     error && <div className='w-full flex justify-around mb-4'>
                         <p className='text-red-500'>{error}</p>
+                    </div>
+                }
+                 {
+                    signupError && <div className='w-full flex justify-around mb-4'>
+                        <p className='text-red-500'>{signupError}</p>
                     </div>
                 }
 
@@ -189,51 +214,55 @@ function SignUp() {
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>First Name:</span>
-                    <input name='firstName' value={student.firstName} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required name='firstName' value={student.firstName} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Last Name:</span>
-                    <input name='lastName' value={student.lastName} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required name='lastName' value={student.lastName} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Gender:</span>
                     <div className='flex-1'>
                         <label htmlFor="male">Male: </label>
-                        <input type="radio" value="Male" onChange={e => handleSubmit(e)} id="male" name="gender" className='mr-3' />
+                        <input required type="radio" value="Male" onChange={e => handleSubmit(e)} id="male" name="gender" className='mr-3' />
                         <label htmlFor="female">Female: </label>
-                        <input type="radio" value="Female" onChange={e => handleSubmit(e)} id="female" name="gender" />
+                        <input required type="radio" value="Female" onChange={e => handleSubmit(e)} id="female" name="gender" />
                     </div>
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold alig text-left block w-40'>Email:</span>
-                    <input name='email' value={student.email} onChange={e => handleSubmit(e)} type="email" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required name='email' value={student.email} onChange={e => handleSubmit(e)} type="email" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Contact No:</span>
-                    <input name='contact' value={student.contact} onChange={e => handleSubmit(e)} type="number" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required name='contact' value={student.contact} onChange={e => handleSubmit(e)} type="number" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>City:</span>
-                    <input name='city' value={student.city} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required name='city' value={student.city} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Address:</span>
-                    <input name='address' value={student.address} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required name='address' value={student.address} onChange={e => handleSubmit(e)} type="text" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Password:</span>
-                    <input name="password" value={student.password} onChange={e => handleSubmit(e)} type="password" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required name="password" value={student.password} onChange={e => handleSubmit(e)} type="password" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 <div className='w-full flex justify-around mb-4'>
                     <span className='font-bold text-left block w-40'>Your Resume:</span>
-                    <input type="file" onChange={e => setResume(e.target.files[0])} accept=".doc, .docx, .pdf, .odt" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
+                    <input required type="file" onChange={e => setResume(e.target.files[0])} accept=".doc, .docx, .pdf, .odt" className='flex-1 border-solid border-blue-300 border-2 outline-none	p-1' />
                 </div>
                 {
                     error && <div className='w-full flex justify-around mb-4'>
                         <p className='text-red-500'>{error}</p>
                     </div>
                 }
-
+                {
+                    signupError && <div className='w-full flex justify-around mb-4'>
+                        <p className='text-red-500'>{signupError}</p>
+                    </div>
+                }
                 <div className='w-full flex justify-around mb-4'>
                     <div className='w-40'></div>
                     <div className='flex-1'>

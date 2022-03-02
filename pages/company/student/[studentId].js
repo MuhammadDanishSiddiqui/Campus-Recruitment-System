@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react'
-import Header from '../../../src/components/Header'
+import Header from '../../../src/components/CompanyHeader'
 import { useRouter } from "next/router"
 import { getStudentDetails } from "../../../src/functions/company"
 
@@ -58,7 +58,7 @@ function StudentDetails() {
             {loading ? <span className='mt-40 w-full flex justify-center items-center'><div className="loader"></div></span> : !error && !loading ?
                 <div className='w-full mt-14 p-8 flex justify-center items-center'>
                     <div className='basis-2/5'>
-                        <img className='w-80 m-auto h-80' src={student.imageUrl ? company.imageUrl : "https://cdn1.vectorstock.com/i/thumb-large/00/85/graduate-avatar-icon-vector-9780085.jpg"} />
+                        <img className='w-80 m-auto h-80' src={student.imageUrl ? student.imageUrl : "https://cdn1.vectorstock.com/i/thumb-large/00/85/graduate-avatar-icon-vector-9780085.jpg"} />
                     </div>
                     <div className='basis-3/5'>
                         <div className='flex border-b-2 border-gray p-2'>

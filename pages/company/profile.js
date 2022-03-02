@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react'
 import Link from 'next/link'
-import Header from "../../src/components/Header"
+import Header from "../../src/components/CompanyHeader"
 import { useRouter } from "next/router"
 
 function CompanyProfile() {

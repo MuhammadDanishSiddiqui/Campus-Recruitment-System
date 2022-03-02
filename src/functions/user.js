@@ -8,7 +8,7 @@ export const getUserDetail = async (id,loadCallBack, successCallBack, errorCallb
         const userSnap = await getDoc(userRef);
         if(userSnap.exists())
         {
-         successCallBack(userSnap.data())
+         successCallBack({...userSnap.data(),id:userSnap.id})
         }
       
     } catch (error) {
@@ -43,6 +43,21 @@ export const getCompanyDetails = async (id,loadCallBack, successCallBack, errorC
         else{
             errorCallback("No such document exits.")
         }
+    } catch (error) {
+        errorCallback(error.message)
+    }
+}
+
+export const getAllJobs = async (loadCallBack, successCallBack, errorCallback) => {
+    try {
+        let jobs = []
+        loadCallBack()
+        const colRef = collection(db, "jobs");
+        const querySnapshot = await getDocs(colRef);
+        querySnapshot.forEach((doc) => {
+            jobs.push({...doc.data(),id:doc.id})
+        });
+        successCallBack(jobs)
     } catch (error) {
         errorCallback(error.message)
     }

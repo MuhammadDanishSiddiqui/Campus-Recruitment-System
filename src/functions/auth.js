@@ -79,7 +79,7 @@ export const loginUser = async (user, loadCallBack, successCallBack, errorCallba
     }
 }
 
-export const logoutUser = async (successCallBack) => {
+export const logoutUser = async (successCallBack,errorCallback) => {
     try {
          await signOut(auth)
          successCallBack()

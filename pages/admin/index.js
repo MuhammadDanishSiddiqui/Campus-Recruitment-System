@@ -1,19 +1,15 @@
 import React , {useEffect} from 'react'
-import Header from "../../src/components/StudentHeader"
+import Header from "../../src/components/AdminHeader"
 import { useRouter } from "next/router"
 
-function student() {
+function Admin() {
     const router = useRouter()
     const user = JSON.parse(typeof window !== "undefined" && localStorage.getItem("currentUser"))
 
     useEffect(() => {
-     if(!user || user.role !== "student")
+     if(!user || user.role !== "admin")
      {
         router.push("/")
-     }
-     if(user)
-     {
-
      }
     }, [])
     
@@ -30,4 +26,4 @@ function student() {
     )
 }
 
-export default student
+export default Admin
